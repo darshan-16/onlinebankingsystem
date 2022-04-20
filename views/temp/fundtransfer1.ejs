@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund transfer</title>
+</head>
+<body>
+    <form action="/home/fundtransfer/send" method="post">
+        <label for="acc">Select Account</label>
+        <select name="acc" id="acc">
+            <% ar.forEach(function(art){ %>
+                <option value="<%= art.accno %><%= art.balance %>"><%= art.accno %></option>
+            <% }) %>
+        </select>
+        <br>
+        <label for="payee">Select Payee</label>
+        <select name="payee" id="payee">
+            <% articles.forEach(function(article){ %>
+                <option value="<%= article.accno %><%= article.ifsc %>"><%= article.title %> - <%= article.accno %></option>
+            <% }) %>
+        </select>
+        <br>
+        <label for="bal">Account Balance</label>
+        <input type="number" name="bal" id="bal" value="" disabled><br>
+        <label for="amt">Enter Amount</label>
+        <input type="number" name="amt" id="amt"><br>
+        <label for="rem">Remarks</label>
+        <input type="text" name="rem" id="rem"><br>
+        <label for="key">Online Key</label>
+        <input type="text" name="key" id="key">
+        <input type="submit" value="Transfer">
+    </form>
+    <script>
+        document.getElementById('bal').value = document.getElementById('acc').value.substr(10,);
+        document.getElementById('acc').addEventListener('change', function() {
+            document.getElementById("bal").value = parseInt(this.value.substr(10,));
+            console.log('You selected: ', this.value);
+        });
+        
+    </script>
+</body>
+</html>

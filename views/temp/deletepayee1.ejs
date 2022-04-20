@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Payee</title>
+</head>
+<body>
+    <form action="/home/managepayee/deletepayee/send" method="post">
+        <select name="acc" id="acc">
+            <% articles.forEach(function(article){ %>
+                <option value="<%= article.accno %>"><%= article.accno %></option>
+            <% }) %>
+        </select>
+        <input type="submit" value="Delete payee">
+    </form>
+    <script>
+        document.getElementById('acc').addEventListener('change', function() {
+            console.log('You selected: ', this.value);
+        });
+    </script>
+</body>
+</html>

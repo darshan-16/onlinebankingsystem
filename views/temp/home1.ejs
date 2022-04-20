@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <a href="http://localhost:3000/home/fundtransfer/getdata">Fund transfer</a>
+    <a href="http://localhost:3000/home/managepayee">Manage payee</a>
+    <a href="http://localhost:3000/home/estatement/getdata">E-Statement</a>
+    <br>
+    <br>
+    <br>
+    <select name="acc" id="acc">
+        <% art.forEach(function(ar){ %>
+            <option value="<%= ar.account_number %>"><%= ar.account_number %></option>
+        <% }) %>
+    </select>
+    <h3>
+        <%= eg[0].credit_points %> <br>
+        <% if(eg[0].credit_points > 80){ %>
+            Loan applicable
+        <% } else{ %>
+            Loan not applicable
+        <% } %>
+    </h3>
+    <% for(var i=articles.length-1;(i>=0) && (i<articles.length-5); i--){ %>
+        <p> <%= articles[i].transaction_id %> - <%= articles[i].account_to_account_number %> - <%= articles[i].transaction_status %> - <%= articles[i].transaction_amount %></p>
+    <% } %>
+
+</body>
+</html>

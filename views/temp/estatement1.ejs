@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Statement</title>
+</head>
+<body>
+    <form action="/home/estatement/download" method="post">
+        <label for="acc">Select Account</label>
+        <select name="acc" id="acc">
+            <% articles.forEach(function(article){ %>
+                <option value="<%= article.accno %>"><%= article.accno %></option>
+            <% }) %>
+        </select>
+        <br>
+        <label for="eexcel">Export Excel</label>
+        <input type="submit" name="eexcel" id="eexcel" value="Excel"><br>
+        <label for="epdf">Export PDF</label>
+        <input type="submit" name="epdf" id="epdf" value="PDF"><br>
+    </form>
+    <script>
+        document.getElementById('bal').value = document.getElementById('acc').value.substr(10,);
+        document.getElementById('acc').addEventListener('change', function() {
+            document.getElementById("bal").value = parseInt(this.value.substr(10,));
+            console.log('You selected: ', this.value);
+        });
+        
+    </script>
+</body>
+</html>

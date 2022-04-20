@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+    <meta charset="UTF-8">
+    
+    <title>
+        BANK CUSTOMER FEEDBACK FORM
+    </title>
+ 
+    <style>
+        .m1{
+            color: #363432;
+            text-align: center;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color:darkgrey;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        form {
+            background-color: #d6d3cb;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px 20px;
+            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+        }
+ 
+       
+        .form-control {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+ 
+       
+        .form-control label {
+            display: block;
+            margin-bottom: 10px;
+        }
+ 
+    
+        .form-control input,
+        .form-control select,
+        .form-control textarea {
+            border: 1px solid #777;
+            border-radius: 2px;
+            font-family: inherit;
+            padding: 10px;
+            display: block;
+            width: 95%;
+        }
+ 
+        .form-control input[type="radio"],
+        .form-control input[type="checkbox"] {
+            display: inline-block;
+            width: auto;
+        }
+ 
+        button {
+            background-color: #363432;
+            border: 1px solid #777;
+            border-radius: 2px;
+            align-self: center;
+            color: white;
+            font-family: inherit;
+            font-size: 21px;
+            display: block;
+            width: 35%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+  
+<body>
+    <h1 class="m1"> BANK CUSTOMER FEEDBACK FORM</h1>
+  
+    
+    <form id="form" class="form" name="form1" method="post" action="/home/help/feedback/send">
+ 
+        
+        <div class="form-control">
+            <label for="name" id="label-name">
+                Customer Name
+            </label>
+ 
+            
+            <input type="text"
+                   id="name"
+                   placeholder="Enter your name" />
+        </div>
+  
+        <div class="form-control">
+            <label for="email" id="label-email">
+                Email
+            </label>
+ 
+           
+            <input type="email"
+                   id="email"
+                   placeholder="Enter your email" 
+                   required
+                   pattern="^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$"/>
+        </div>
+  
+        <div class="form-control">
+            <label for="Phone_Number" id="Phone_Number">
+                Phone number
+            </label>
+ 
+            <input type="number"
+                   id="Phone_Number"
+                   placeholder="Enter your phone number" 
+                   required
+                   pattern="^[0-9]+$"/>
+        </div>
+  
+        <div class="form-control">
+            <label for="role" id="label-role">
+                Which option best describes you?
+            </label>
+             
+            <select name="role" id="role">
+                <option value="student">Student</option>
+                <option value="Minors">Minors</option>
+                <option value="professional">
+                    Professional
+                </option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+  
+        <div class="form-control">
+            <label>
+                Type of Feedback
+            </label>
+ 
+            
+            <label for="recommed-1">
+                <input type="radio"
+                       id="recommed-1"
+                       name="recommed">Enquiry</input>
+            </label>
+            <label for="recommed-2">
+                <input type="radio"
+                       id="recommed-2"
+                       name="recommed">complaint</input>
+            </label>
+            <label for="recommed-3">
+                <input type="radio"
+                       id="recommed-3"
+                       name="recommed">Compliment</input>
+            </label>
+            <label for="recommed-4">
+                <input type="radio"
+                       id="recommed-4"
+                       name="recommed">suggestion</input>
+        </div>
+  
+        
+  
+        <div class="form-control">
+            <label for="comment">
+                Feedback/Enquiry
+            </label>
+            <textarea name="comment" id="comment"
+                placeholder="Enter your comment here">
+            </textarea>
+        </div>
+        <button type="submit" value="submit">
+            Submit
+        </button>
+    </form>
+</body>
+  
+</html>
+<!--<script>
+    function validateform(){  
+    const cust_name=document.getElementById('name').values;
+    const cust_email=document.getElementById('email').values;
+    const cust_phno=document.getElementById('Phone_Number').values;
+    const cust_comment=document.getElementById('comment').values;
+    var numbers = /^[0-9]+$/;
+    var mailformat = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+    if(cust_name==""){
+        alert("Fill the name!");
+        return false;
+    }
+    if(cust_Comment==""){
+        alert("please fill the space!");
+        return false;
+    }
+    if (!mailformat.test(cust_email)) {
+       alert("Enter valid email")
+    }
+    if(!(cust_phno.match(numbers)))
+    {
+        alert("Enter your mobile number");
+       
+    }
+    
+          
+    }
+</script>  ––>

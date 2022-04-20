@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Payee</title>
+</head>
+<body>
+    <form action="/home/managepayee/updatepayee/send" method="post">
+        <select name="acc" id="acc">
+            <% articles.forEach(function(article){ %>
+                <option value="<%= article.accno %>"><%= article.accno %></option>
+            <% }) %>
+        </select>
+        <input type="button" value="Select" onclick="func()">
+        <div id="update" style="visibility: hidden;">
+            <label for="name">New Name</label>
+            <input type="text" name="name" id="name">
+            <input type="submit" value="Update Name">
+        </div>
+    </form>
+    <script>
+        document.getElementById('acc').addEventListener('change', function() {
+            console.log('You selected: ', this.value);
+        });
+        function func() {
+            document.getElementById('update').style.visibility = 'visible'
+        }
+    </script>
+</body>
+</html>

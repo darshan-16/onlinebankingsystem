@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Landing Page using HTML, CSS & Javascript</title>
+
+    <!-- ==== STYLE.CSS ==== -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- ====  REMIXICON CDN ==== -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- ==== ANIMATE ON SCROLL CSS CDN  ==== -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- ==== HEADER ==== -->
+    <header class="container header">
+        <!-- ==== NAVBAR ==== -->
+        <nav class="nav">
+            <div class="logo">
+                <h2>Uno Bank</h2>
+            </div>
+
+            <div class="nav_menu" id="nav_menu">
+                <button class="close_btn" id="close_btn">
+                    <i class="ri-close-fill"></i>
+                </button>
+
+                <ul class="nav_menu_list">
+                    <li class="nav_menu_item">
+                        <a href="http://localhost:3000/login" class="nav_menu_link">Login</a>
+                    </li>
+                    <li class="nav_menu_item">
+                        <a href="#" class="nav_menu_link">Signup</a>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="toggle_btn" id="toggle_btn">
+                <i class="ri-menu-line"></i>
+            </button>
+        </nav>
+    </header>
+
+    <section class="wrapper">
+        <div class="container">
+            <div class="grid-cols-2">
+                <div class="grid-item-1">
+                    <h1 class="main-heading">
+                        Welcome to <span>Uno Bank</span>
+                        <br />
+                        Smart banking for Smart people.
+                    </h1>
+                    <p class="info-text">
+                        Financial Strength is the cornerstone of our success. We provide wholesome banking experiences
+                        just for you!!!.
+                    </p>
+
+                    <div class="btn_wrapper">
+                        <button class="btn view_more_btn">
+                            Learn more<i class="ri-arrow-right-line"></i>
+                        </button>
+
+                        <button class="btn documentation_btn">Demo</button>
+                    </div>
+                </div>
+                <div class="grid-item-2">
+                    <div class="team_img_wrapper">
+                        <img src="logo-short.png" alt="uno-bank" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrapper">
+        <div class="container" data-aos="fade-up" data-aos-duration="1000">
+            <div class="grid-cols-3">
+                <div class="grid-col-item">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="featured_info">
+                        <span>Building a Secure ecosystem </span>
+                        <p>
+                            Take your banking activity to the next level with security and administrative features
+                        </p>
+                    </div>
+                </div>
+                <div class="grid-col-item">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="featured_info">
+                        <span>Access instant Tech Support</span>
+                        <p>
+                            Get quick assistance from our tech support team through chat/email/call 24/7.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid-col-item">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                    </div>
+                    <div class="featured_info">
+                        <span>Equipping the best analytic tools</span>
+                        <p>
+                            Make use of Uno Bank's analytic tool to visualize your banking activity.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer></footer>
+
+    <!-- ==== ANIMATE ON SCROLL JS CDN -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- ==== GSAP CDN ==== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <!-- ==== SCRIPT.JS ==== -->
+    <script>
+        const navId = document.getElementById('nav_menu'),
+            ToggleBtnId = document.getElementById('toggle_btn'),
+            CloseBtnId = document.getElementById('close_btn')
+
+        // ==== SHOW MENU ==== //
+        ToggleBtnId.addEventListener('click', () => {
+            navId.classList.add('show')
+        })
+
+        // ==== HIDE MENU ==== //
+        CloseBtnId.addEventListener('click', () => {
+            navId.classList.remove('show')
+        })
+
+        // ==== Animate on Scroll Initialize  ==== //
+        AOS.init()
+
+        // ==== GSAP Animations ==== //
+        // ==== LOGO  ==== //
+        gsap.from('.logo', {
+            opacity: 0,
+            y: -10,
+            delay: 1,
+            duration: 0.5,
+        })
+        // ==== NAV-MENU ==== //
+        gsap.from('.nav_menu_list .nav_menu_item', {
+            opacity: 0,
+            y: -10,
+            delay: 1.4,
+            duration: 0.5,
+            stagger: 0.3,
+        })
+        // ==== TOGGLE BTN ==== //
+        gsap.from('.toggle_btn', {
+            opacity: 0,
+            y: -10,
+            delay: 1.4,
+            duration: 0.5,
+        })
+        // ==== MAIN HEADING  ==== //
+        gsap.from('.main-heading', {
+            opacity: 0,
+            y: 20,
+            delay: 2.4,
+            duration: 1,
+        })
+        // ==== INFO TEXT ==== //
+        gsap.from('.info-text', {
+            opacity: 0,
+            y: 20,
+            delay: 2.8,
+            duration: 1,
+        })
+        // ==== CTA BUTTONS ==== //
+        gsap.from('.btn_wrapper', {
+            opacity: 0,
+            y: 20,
+            delay: 2.8,
+            duration: 1,
+        })
+        // ==== TEAM IMAGE ==== //
+        gsap.from('.team_img_wrapper img', {
+            opacity: 0,
+            y: 20,
+            delay: 3,
+            duration: 1,
+        })
+
+    </script>
+
+</body>
+
+</html>

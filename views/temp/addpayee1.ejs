@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Payee</title>
+</head>
+<body>
+    <form action="/home/managepayee/addpayee/add" method="post">
+        <label for="paccn">Payee Account Name:</label>
+        <input type="text" name="paccn" id="paccn">
+        <br>
+        <label for="pname">Payee Nickname:</label>
+        <input type="text" name="pname" id="pname">
+        <br>
+        <label for="acctype">Account type:</label>
+        <select name="acctype" id="acctype">
+            <option value="Savingsaccount">Savings Account</option>
+            <option value="Currentaccount">Current Account</option>
+        </select>
+        <br>
+        <label for="pifsc">IFSC Code:</label>
+        <input type="text" name="pifsc" id="pifsc">
+        <input type="submit" value="Find IFSC">
+        <br>
+        <label for="paccno">Payee Account Number:</label>
+        <input type="text" name="paccno" id="paccno">
+        <br>
+        <label for="pcaccno">Confirm Account Number:</label>
+        <input type="text" name="pcaccno" id="pcaccno">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
