@@ -75,7 +75,7 @@
                         </div>
     
                         <div class="max-w-sm mx-auto">
-                            <form action="/home/fundtransfer/fund/send" method="post">
+                            <form action="/home/fundtransfer/quickpay/send" method="post">
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
                                         <label class="block text-gray-800 text-sm font-medium mb-1"
@@ -91,21 +91,30 @@
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="payee">Select Payee</label>
-                                        <select name="payee" id="payee">
-                                            <% articles.forEach(function(article){ %>
-                                                <option value="<%= article.accno %><%= article.ifsc %>">
-                                                    <%= article.title %> - <%= article.accno %>
-                                                </option>
-                                            <% }) %>
-                                        </select>
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="bal">Account Balance</label>
+                                        <input id="bal" type="number" name="bal" value="" disabled class="form-input w-full text-gray-800"
+                                            placeholder="Acc Balance" required />
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="bal">Account Balance</label>
-                                        <input id="bal" type="number" name="bal" value="" disabled class="form-input w-full text-gray-800"
-                                            placeholder="Acc Balance" required />
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="pname">Payee Name</label>
+                                        <input id="pname" type="text" name="pname" value="" class="form-input w-full text-gray-800"
+                                            placeholder="Payee name" required />
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="paccno">Payee Account Number</label>
+                                        <input id="paccno" type="text" name="paccno" value="" class="form-input w-full text-gray-800"
+                                            placeholder="Payee account number" required />
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="pifsc">IFSC code</label>
+                                        <input id="pifsc" type="text" name="pifsc" value="" class="form-input w-full text-gray-800"
+                                            placeholder="IFSC code" required />
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
@@ -135,43 +144,10 @@
                                     </div>
                                 </div>
                             </form>
-                            <!--
-                            <form action="/home/fundtransfer/send" method="post">
-                                <label for="acc">Select Account</label>
-                                <select name="acc" id="acc">
-                                    <% ar.forEach(function(art){ %>
-                                        <option value="<%= art.accno %><%= art.balance %>">
-                                            <%= art.accno %>
-                                        </option>
-                                        <% }) %>
-                                </select>
-                                <br>
-                                <label for="payee">Select Payee</label>
-                                <select name="payee" id="payee">
-                                    <% articles.forEach(function(article){ %>
-                                        <option value="<%= article.accno %><%= article.ifsc %>">
-                                            <%= article.title %> - <%= article.accno %>
-                                        </option>
-                                        <% }) %>
-                                </select>
-                                <br>
-                                <label for="bal">Account Balance</label>
-                                <input type="number" name="bal" id="bal" value="" disabled><br>
-                                <label for="amt">Enter Amount</label>
-                                <input type="number" name="amt" id="amt"><br>
-                                <label for="rem">Remarks</label>
-                                <input type="text" name="rem" id="rem"><br>
-                                <label for="key">Online Key</label>
-                                <input type="text" name="key" id="key">
-                                <input type="submit" value="Transfer">
-                            </form>
-                        -->
                         </div>
-    
                     </div>
                 </div>
             </section>
-    
         </main>
     
     </div>

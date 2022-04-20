@@ -183,8 +183,105 @@ app.get('/home', function(req, res) {
     res.render("home.ejs", {articles : posts1, art : posts, eg : posts2})
 })
 
+// Open fund transfer home page
+app.get('/home/fundtransfer', function(req, res) {
+    res.render("fundtransfer_home.ejs")
+})
+
+// Open quick pay page
+app.get('/home/fundtransfer/quickpay', function(req, res) {
+    res.render("quickpay.ejs", {ar : posts1})
+})
+
+// Redirect to quick pay page
+app.get('/home/fundtransfer/quickpay/getdata', function(req, res) {
+    db.query('SELECT * FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            posts1 = []
+            for(var i=0; i<results.length; i++){
+                var d = {}
+                d.accno = results[i].account_number
+                d.balance = results[i].account_balance
+                posts1.unshift(d)
+            }
+        }
+    })
+    res.redirect("/home/fundtransfer/quickpay")
+})
+
+// Transfer amount
+app.post('/home/fundtransfer/quickpay/send', function(req, res){
+    var bal1, bal2;
+    var timestamp1 = new Date().getTime();
+    t1 = timestamp1.toString()
+    db.query('SELECT bank_ifsc FROM branch where bank_ifsc = ?', [req.body.pifsc], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            db.query('SELECT consumer_online_pin FROM consumer where consumer_id = ?', [cid], function(error, results, fields) {
+                if(error)throw error;
+                if (results.length>0){
+                    if (results[0].consumer_online_pin == req.body.key){
+                        db.query('SELECT account_balance FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
+                            if(error)throw error;
+                            if (results.length>0){ 
+                                bal1 = results[0].account_balance 
+                                console.log(typeof(req.body.amt))
+                                console.log(bal1)
+                                console.log(typeof(bal1))
+                                db.query('UPDATE consumer_account SET account_balance = ? where consumer_consumer_id=?', [parseInt(bal1)-parseInt(req.body.amt), cid], function(error, results, fields) {
+                                    if(error)throw error;
+                                    else{
+                                        console.log("Updated from payee")
+                                        db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1,cifsc, req.body.acc.substr(0, 10), req.body.pifsc, req.body.paccno, "IMPS", req.body.amt, "Debit", 0], function(error, results, fields) {
+                                            if(error)throw error;
+                                            else{console.log("Inserted debit")}
+                                    })}
+                                })
+                            }
+                            console.log(req.body.paccno)
+                            db.query('SELECT account_balance FROM consumer_account where account_number = ?', [req.body.paccno], function(error, results1, fields) {
+                                if(error)throw error;
+                                console.log(results1.length)
+                                console.log(results1)
+                                if (results1.length>0){ 
+                                    bal2 = results1[0].account_balance
+                                    db.query('UPDATE consumer_account SET account_balance = ? where account_number = ?', [parseInt(bal2)+parseInt(req.body.amt), req.body.paccno], function(error, results, fields) {
+                                        if(error)throw error;
+                                        else{
+                                            console.log("Updated to payee")
+                                            db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1, req.body.pifsc, req.body.paccno, cifsc, req.body.acc.substr(0, 10), "IMPS", req.body.amt, "Credit", 0], function(error, results, fields) {
+                                                if(error)throw error;
+                                                else{console.log("Inserted credit")}
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                        })
+                    }
+                    else{
+                        console.log("Failed payment")
+                        res.redirect('/home/fail')
+                    }
+                }
+                else{
+                    console.log("Failed payment")
+                    res.redirect('/home/fail')
+                }
+            })
+        }
+        else{
+            console.log("Failed payment")
+            res.redirect('/home/fail')
+        }
+    })
+    
+    res.redirect('/home/success')
+})
+
 // Redirect to Fund transfer page
-app.get('/home/fundtransfer/getdata', function(req, res) {
+app.get('/home/fundtransfer/fund/getdata', function(req, res) {
     db.query('SELECT * FROM payee where consumer_consumer_id = ?', [cid], function(error, results, fields) {
         if(error)throw error;
         if (results.length>0){
@@ -210,12 +307,67 @@ app.get('/home/fundtransfer/getdata', function(req, res) {
             }
         }
     })
-    res.redirect("/home/fundtransfer")
+    res.redirect("/home/fundtransfer/fund")
 })
 
 // Open fund transfer page
-app.get('/home/fundtransfer', function(req, res) {
+app.get('/home/fundtransfer/fund', function(req, res) {
     res.render("fundtransfer.ejs", {articles : posts, ar : posts1})
+})
+
+// Transfer amount
+app.post('/home/fundtransfer/fund/send', function(req, res){
+    var bal1, bal2;
+    var timestamp1 = new Date().getTime();
+    t1 = timestamp1.toString()
+    db.query('SELECT consumer_online_pin FROM consumer where consumer_id = ?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            if (results[0].consumer_online_pin == req.body.key){
+                db.query('SELECT account_balance FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
+                    if(error)throw error;
+                    if (results.length>0){ 
+                        bal1 = results[0].account_balance 
+                        console.log(typeof(req.body.amt))
+                        console.log(bal1)
+                        console.log(typeof(bal1))
+                        db.query('UPDATE consumer_account SET account_balance = ? where consumer_consumer_id=?', [parseInt(bal1)-parseInt(req.body.amt), cid], function(error, results, fields) {
+                            if(error)throw error;
+                            else{
+                                console.log("Updated from payee")
+                                db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1,cifsc, req.body.acc.substr(0, 10), req.body.payee.substr(10,), req.body.payee.substr(0,10), "IMPS", req.body.amt, "Debit", 0], function(error, results, fields) {
+                                    if(error)throw error;
+                                    else{console.log("Inserted debit")}
+                            })}
+                        })
+                    }
+                    console.log(req.body.payee.substr(0,10))
+                    db.query('SELECT account_balance FROM consumer_account where account_number = ?', [req.body.payee.substr(0,10)], function(error, results1, fields) {
+                        if(error)throw error;
+                        console.log(results1.length)
+                        console.log(results1)
+                        if (results1.length>0){ 
+                            bal2 = results1[0].account_balance
+                            db.query('UPDATE consumer_account SET account_balance = ? where account_number = ?', [parseInt(bal2)+parseInt(req.body.amt), req.body.payee.substr(0,10)], function(error, results, fields) {
+                                if(error)throw error;
+                                else{
+                                    console.log("Updated to payee")
+                                    db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1, req.body.payee.substr(10,), req.body.payee.substr(0,10), cifsc, req.body.acc.substr(0, 10), "IMPS", req.body.amt, "Credit", 0], function(error, results, fields) {
+                                        if(error)throw error;
+                                        else{console.log("Inserted credit")}
+                                    })
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+        }
+        else{
+            console.log("Failed payment")
+        }
+    })
+    res.redirect('/home/success')
 })
 
 // Open Manage page
@@ -413,61 +565,6 @@ app.post('/home/managepayee/addpayee/verify', function(req, res){
             }
         }
     })
-})
-
-// Transfer amount
-app.post('/home/fundtransfer/send', function(req, res){
-    var bal1, bal2;
-    var timestamp1 = new Date().getTime();
-    t1 = timestamp1.toString()
-    db.query('SELECT consumer_online_pin FROM consumer where consumer_id = ?', [cid], function(error, results, fields) {
-        if(error)throw error;
-        if (results.length>0){
-            if (results[0].consumer_online_pin == req.body.key){
-                db.query('SELECT account_balance FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
-                    if(error)throw error;
-                    if (results.length>0){ 
-                        bal1 = results[0].account_balance 
-                        console.log(typeof(req.body.amt))
-                        console.log(bal1)
-                        console.log(typeof(bal1))
-                        db.query('UPDATE consumer_account SET account_balance = ? where consumer_consumer_id=?', [parseInt(bal1)-parseInt(req.body.amt), cid], function(error, results, fields) {
-                            if(error)throw error;
-                            else{
-                                console.log("Updated from payee")
-                                db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1,cifsc, req.body.acc.substr(0, 10), req.body.payee.substr(10,), req.body.payee.substr(0,10), "IMPS", req.body.amt, "Debit", 0], function(error, results, fields) {
-                                    if(error)throw error;
-                                    else{console.log("Inserted debit")}
-                            })}
-                        })
-                    }
-                    console.log(req.body.payee.substr(0,10))
-                    db.query('SELECT account_balance FROM consumer_account where account_number = ?', [req.body.payee.substr(0,10)], function(error, results1, fields) {
-                        if(error)throw error;
-                        console.log(results1.length)
-                        console.log(results1)
-                        if (results1.length>0){ 
-                            bal2 = results1[0].account_balance
-                            db.query('UPDATE consumer_account SET account_balance = ? where account_number = ?', [parseInt(bal2)+parseInt(req.body.amt), req.body.payee.substr(0,10)], function(error, results, fields) {
-                                if(error)throw error;
-                                else{
-                                    console.log("Updated to payee")
-                                    db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1, req.body.payee.substr(10,), req.body.payee.substr(0,10), cifsc, req.body.acc.substr(0, 10), "IMPS", req.body.amt, "Credit", 0], function(error, results, fields) {
-                                        if(error)throw error;
-                                        else{console.log("Inserted credit")}
-                                    })
-                                }
-                            })
-                        }
-                    })
-                })
-            }
-        }
-        else{
-            console.log("Failed payment")
-        }
-    })
-    res.redirect('/home/success')
 })
 
 // Get data for E-Statement
