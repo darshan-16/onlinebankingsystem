@@ -180,7 +180,7 @@ app.get('/home/getdata', function(req, res) {
 })
 
 app.get('/home', function(req, res) {
-    res.render("home.ejs", {articles : posts1, art : posts, eg : posts2})
+    res.render("home.ejs", {articles : posts1.reverse(), art : posts, eg : posts2})
 })
 
 // Open fund transfer home page
@@ -210,7 +210,7 @@ app.get('/home/fundtransfer/quickpay/getdata', function(req, res) {
     res.redirect("/home/fundtransfer/quickpay")
 })
 
-// Transfer amount
+// Transfer amount quickpay
 app.post('/home/fundtransfer/quickpay/send', function(req, res){
     var bal1, bal2;
     var timestamp1 = new Date().getTime();
@@ -315,7 +315,7 @@ app.get('/home/fundtransfer/fund', function(req, res) {
     res.render("fundtransfer.ejs", {articles : posts, ar : posts1})
 })
 
-// Transfer amount
+// Transfer amount fund
 app.post('/home/fundtransfer/fund/send', function(req, res){
     var bal1, bal2;
     var timestamp1 = new Date().getTime();
@@ -365,6 +365,87 @@ app.post('/home/fundtransfer/fund/send', function(req, res){
         }
         else{
             console.log("Failed payment")
+        }
+    })
+    res.redirect('/home/success')
+})
+
+// Open online pin page
+app.post('/home/fundtransfer/recent/getdata', function(req, res) {1
+    const tid = req.body.pay
+    var d = {}
+    posts = []
+    db.query('SELECT * FROM consumer_transaction where transaction_id = ?', [tid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            d.amt = parseInt(results[0].transaction_amount)
+            d.faccno = results[0].account_from_account_number
+            d.taccno = results[0].account_to_account_number
+            d.tifsc = results[0].bank_to_ifsc
+        }
+        db.query('SELECT * FROM consumer_account where account_number = ?', [d.faccno], function(error, results, fields) {
+            if(error)throw error;
+            if (results.length>0){
+                d.bal = results[0].account_balance
+                posts.push(d)
+            }
+        })
+    })
+    res.redirect('/home/fundtransfer/recent')
+})
+
+app.get('/home/fundtransfer/recent', function(req, res) {
+    res.render('recent_trans.ejs', {articles : posts})
+})
+
+// Transfer amount recent
+app.post('/home/fundtransfer/recent/send', function(req, res){
+    var bal1, bal2;
+    var timestamp1 = new Date().getTime();
+    t1 = timestamp1.toString()
+    console.log(req.body)
+    db.query('SELECT consumer_online_pin FROM consumer where consumer_id = ?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            if (results[0].consumer_online_pin == req.body.key){
+                db.query('SELECT account_balance FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
+                    if(error)throw error;
+                    if (results.length>0){ 
+                        bal1 = results[0].account_balance 
+                        db.query('UPDATE consumer_account SET account_balance = ? where consumer_consumer_id=?', [parseInt(bal1)-parseInt(posts[0].amt), cid], function(error, results, fields) {
+                            if(error)throw error;
+                            else{
+                                console.log("Updated from payee")
+                                db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1,cifsc, posts[0].faccno, posts[0].tifsc, posts[0].taccno, "IMPS", posts[0].amt, "Debit", 0], function(error, results, fields) {
+                                    if(error)throw error;
+                                    else{console.log("Inserted debit")}
+                            })}
+                        })
+                    }
+                    db.query('SELECT account_balance FROM consumer_account where account_number = ?', [posts[0].taccno], function(error, results1, fields) {
+                        if(error)throw error;
+                        console.log(results1.length)
+                        console.log(results1)
+                        if (results1.length>0){ 
+                            bal2 = results1[0].account_balance
+                            db.query('UPDATE consumer_account SET account_balance = ? where account_number = ?', [parseInt(bal2)+parseInt(posts[0].amt), posts[0].taccno], function(error, results, fields) {
+                                if(error)throw error;
+                                else{
+                                    console.log("Updated to payee")
+                                    db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1, posts[0].tifsc, posts[0].taccno, cifsc, posts[0].faccno, "IMPS", posts[0].amt, "Credit", 0], function(error, results, fields) {
+                                        if(error)throw error;
+                                        else{console.log("Inserted credit")}
+                                    })
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+        }
+        else{
+            console.log("Failed payment")
+            res.redirect('/home/getdata')
         }
     })
     res.redirect('/home/success')

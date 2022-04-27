@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fund transfer</title>
+    <title>Recent Transaction</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="main.scss">
 </head>
@@ -23,29 +23,25 @@
                         </div>
     
                         <div class="max-w-sm mx-auto">
-                            <form action="/home/fundtransfer/fund/send" method="post">
+                            <form action="/home/fundtransfer/recent/send" method="post">
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
                                         <label class="block text-gray-800 text-sm font-medium mb-1"
                                             for="acc">Select Account</label>
-                                            <select name="acc" id="acc">
-                                                <% ar.forEach(function(art){ %>
-                                                    <option value="<%= art.accno %><%= art.balance %>">
-                                                        <%= art.accno %>
-                                                    </option>
-                                                <% }) %>
+                                            <select name="acc" id="acc" disabled>
+                                                <option value="<%= articles[0].faccno %><%= articles[0].bal %>">
+                                                    <%= articles[0].faccno %>
+                                                </option>
                                             </select>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
                                         <label class="block text-gray-800 text-sm font-medium mb-1" for="payee">Select Payee</label>
-                                        <select name="payee" id="payee">
-                                            <% articles.forEach(function(article){ %>
-                                                <option value="<%= article.accno %><%= article.ifsc %>">
-                                                    <%= article.title %> - <%= article.accno %>
-                                                </option>
-                                            <% }) %>
+                                        <select name="payee" id="payee" disabled>
+                                            <option value="<%= articles[0].taccno %><%= articles[0].tifsc %>">
+                                                <%= articles[0].taccno %> - <%= articles[0].tifsc %>
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -53,21 +49,14 @@
                                     <div class="w-full px-3">
                                         <label class="block text-gray-800 text-sm font-medium mb-1" for="bal">Account Balance</label>
                                         <input id="bal" type="number" name="bal" value="" disabled class="form-input w-full text-gray-800"
-                                            placeholder="Acc Balance" required />
+                                            placeholder="Acc Balance"/>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
                                     <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="amt">Enter Amount</label>
-                                        <input id="amt" type="number" name="amt" class="form-input w-full text-gray-800" placeholder="Enter Amount"
-                                            required />
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap -mx-3 mb-4">
-                                    <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="rem">Remarks</label>
-                                        <input id="rem" type="text" name="rem" class="form-input w-full text-gray-800" placeholder="Enter Remarks"
-                                            required />
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="amt">Amount</label>
+                                        <input id="amt" type="number" name="amt" class="form-input w-full text-gray-800" placeholder="Amount" value="<%= articles[0].amt %>"
+                                            required disabled/>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-4">
@@ -83,37 +72,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <!--
-                            <form action="/home/fundtransfer/send" method="post">
-                                <label for="acc">Select Account</label>
-                                <select name="acc" id="acc">
-                                    <% ar.forEach(function(art){ %>
-                                        <option value="<%= art.accno %><%= art.balance %>">
-                                            <%= art.accno %>
-                                        </option>
-                                        <% }) %>
-                                </select>
-                                <br>
-                                <label for="payee">Select Payee</label>
-                                <select name="payee" id="payee">
-                                    <% articles.forEach(function(article){ %>
-                                        <option value="<%= article.accno %><%= article.ifsc %>">
-                                            <%= article.title %> - <%= article.accno %>
-                                        </option>
-                                        <% }) %>
-                                </select>
-                                <br>
-                                <label for="bal">Account Balance</label>
-                                <input type="number" name="bal" id="bal" value="" disabled><br>
-                                <label for="amt">Enter Amount</label>
-                                <input type="number" name="amt" id="amt"><br>
-                                <label for="rem">Remarks</label>
-                                <input type="text" name="rem" id="rem"><br>
-                                <label for="key">Online Key</label>
-                                <input type="text" name="key" id="key">
-                                <input type="submit" value="Transfer">
-                            </form>
-                        -->
+                            
                         </div>
     
                     </div>
