@@ -370,8 +370,8 @@ app.post('/home/fundtransfer/fund/send', function(req, res){
     res.redirect('/home/success')
 })
 
-// Open online pin page
-app.post('/home/fundtransfer/recent/getdata', function(req, res) {1
+// Open online pin page - Recent
+app.post('/home/fundtransfer/recent/getdata', function(req, res) {
     const tid = req.body.pay
     var d = {}
     posts = []
@@ -400,6 +400,114 @@ app.get('/home/fundtransfer/recent', function(req, res) {
 
 // Transfer amount recent
 app.post('/home/fundtransfer/recent/send', function(req, res){
+    var bal1, bal2;
+    var timestamp1 = new Date().getTime();
+    t1 = timestamp1.toString()
+    console.log(req.body)
+    db.query('SELECT consumer_online_pin FROM consumer where consumer_id = ?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            if (results[0].consumer_online_pin == req.body.key){
+                db.query('SELECT account_balance FROM consumer_account where consumer_consumer_id = ?', [cid], function(error, results, fields) {
+                    if(error)throw error;
+                    if (results.length>0){ 
+                        bal1 = results[0].account_balance 
+                        db.query('UPDATE consumer_account SET account_balance = ? where consumer_consumer_id=?', [parseInt(bal1)-parseInt(posts[0].amt), cid], function(error, results, fields) {
+                            if(error)throw error;
+                            else{
+                                console.log("Updated from payee")
+                                db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1,cifsc, posts[0].faccno, posts[0].tifsc, posts[0].taccno, "IMPS", posts[0].amt, "Debit", 0], function(error, results, fields) {
+                                    if(error)throw error;
+                                    else{console.log("Inserted debit")}
+                            })}
+                        })
+                    }
+                    db.query('SELECT account_balance FROM consumer_account where account_number = ?', [posts[0].taccno], function(error, results1, fields) {
+                        if(error)throw error;
+                        console.log(results1.length)
+                        console.log(results1)
+                        if (results1.length>0){ 
+                            bal2 = results1[0].account_balance
+                            db.query('UPDATE consumer_account SET account_balance = ? where account_number = ?', [parseInt(bal2)+parseInt(posts[0].amt), posts[0].taccno], function(error, results, fields) {
+                                if(error)throw error;
+                                else{
+                                    console.log("Updated to payee")
+                                    db.query('INSERT INTO consumer_transaction (transaction_time, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_transaction_method, transaction_amount, transaction_status, transaction_charge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [t1, posts[0].tifsc, posts[0].taccno, cifsc, posts[0].faccno, "IMPS", posts[0].amt, "Credit", 0], function(error, results, fields) {
+                                        if(error)throw error;
+                                        else{console.log("Inserted credit")}
+                                    })
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+        }
+        else{
+            console.log("Failed payment")
+            res.redirect('/home/getdata')
+        }
+    })
+    res.redirect('/home/success')
+})
+
+// Favourite page
+app.get('/home/fundtransfer/favourite/getdata', function(req, res) {
+    db.query('SELECT * FROM favourites where consumer_consumer_id =?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            posts1 = []
+            console.log("Entered fav")
+            for(var i=0; i<results.length; i++){
+                var d = {}
+                d.fav_id = results[i].fav_id.toString()
+                d.account_to_account_number = results[i].account_to_account_number
+                d.payee_nick_name = results[i].payee_nick_name
+                d.transaction_amount = results[i].transaction_amount
+                posts1.push(d)
+            }
+            console.log(posts1)
+        }
+    })
+    res.redirect("/home/fundtransfer/favourite")
+})
+
+// Favourites page
+app.get('/home/fundtransfer/favourite', function(req, res) {
+    res.render('favourites.ejs', {articles : posts1})
+})
+
+// Open online pin page - Favourite
+app.post('/home/fundtransfer/favourite/pay/getdata', function(req, res) {
+    const fid = parseInt(req.body.pay)
+    console.log(fid)
+    var d = {}
+    posts = []
+    db.query('SELECT * FROM favourites where fav_id = ?', [fid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            d.amt = parseInt(results[0].transaction_amount)
+            d.faccno = results[0].account_from_account_number
+            d.taccno = results[0].account_to_account_number
+            d.tifsc = results[0].bank_to_ifsc
+        }
+        db.query('SELECT * FROM consumer_account where account_number = ?', [d.faccno], function(error, results, fields) {
+            if(error)throw error;
+            if (results.length>0){
+                d.bal = results[0].account_balance
+                posts.push(d)
+            }
+        })
+    })
+    res.redirect('/home/fundtransfer/favourite/pay')
+})
+
+app.get('/home/fundtransfer/favourite/pay', function(req, res) {
+    res.render('fav_trans.ejs', {articles : posts})
+})
+
+// Transfer amount favourite
+app.post('/home/fundtransfer/favourite/send', function(req, res){
     var bal1, bal2;
     var timestamp1 = new Date().getTime();
     t1 = timestamp1.toString()

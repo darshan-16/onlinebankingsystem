@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourite Transaction Pay</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="main.scss">
+</head>
+<body>
+    <div class="flex flex-col min-h-screen overflow-hidden">
+    
+        <%- include('partials/header'); %>
+        <main class="flex-grow">
+    
+            <section class="bg-gradient-to-b from-gray-100 to-white">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div class="pt-32 pb-12 md:pt-40 md:pb-20">
+    
+                        <div class="max-w-3xl mx-auto text-center pb-12 md:pb-20">
+                            <h1 class="h1">Fund Transfer</h1>
+                        </div>
+    
+                        <div class="max-w-sm mx-auto">
+                            <form action="/home/fundtransfer/favourite/send" method="post">
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1"
+                                            for="acc">Select Account</label>
+                                            <select name="acc" id="acc" disabled>
+                                                <option value="<%= articles[0].faccno %><%= articles[0].bal %>">
+                                                    <%= articles[0].faccno %>
+                                                </option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="payee">Select Payee</label>
+                                        <select name="payee" id="payee" disabled>
+                                            <option value="<%= articles[0].taccno %><%= articles[0].tifsc %>">
+                                                <%= articles[0].taccno %> - <%= articles[0].tifsc %>
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="bal">Account Balance</label>
+                                        <input id="bal" type="number" name="bal" value="" disabled class="form-input w-full text-gray-800"
+                                            placeholder="Acc Balance"/>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="amt">Amount</label>
+                                        <input id="amt" type="number" name="amt" class="form-input w-full text-gray-800" placeholder="Amount" value="<%= articles[0].amt %>"
+                                            required disabled/>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mb-4">
+                                    <div class="w-full px-3">
+                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="key">Online Key</label>
+                                        <input id="key" type="text" name="key" class="form-input w-full text-gray-800" placeholder="Enter Online pin"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap -mx-3 mt-6">
+                                    <div class="w-full px-3">
+                                        <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-full" type="submit" value="Transfer">Transfer Amount</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </div>
+    
+                    </div>
+                </div>
+            </section>
+    
+        </main>
+    
+    </div>
+    <script>
+        document.getElementById('bal').value = document.getElementById('acc').value.substr(10,);
+        document.getElementById('acc').addEventListener('change', function() {
+            document.getElementById("bal").value = parseInt(this.value.substr(10,));
+            console.log('You selected: ', this.value);
+        });
+    </script>
+</body>
+</html>
