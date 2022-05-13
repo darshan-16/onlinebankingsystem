@@ -477,9 +477,96 @@ app.get('/home/fundtransfer/favourite', function(req, res) {
     res.render('favourites.ejs', {articles : posts1})
 })
 
+var fav_id
+app.post('/home/funtransfer/favourite/deladd', function(req, res) {
+    if(req.body.pay){
+        fav_id = req.body.pay
+        res.redirect('/home/fundtransfer/favourite/pay/getdata')
+    }
+    else if(req.body.delete){
+        fav_id = req.body.delete
+        res.redirect('/home/fundtransfer/favourite/delete')
+    }
+})
+
+// Open Add fav page
+app.get('/home/fundtransfer/favourite/addfav/getdata', function(req, res) {
+    db.query('SELECT payee_account_number FROM payee WHERE consumer_consumer_id =?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            posts = []
+            for(var i=0; i<results.length; i++){
+                var d = {}
+                d.payee_account_number = results[i].payee_account_number
+                posts.push(d)
+            }
+            console.log(posts)
+        }
+    })
+    db.query('SELECT account_number FROM consumer_account WHERE consumer_consumer_id =?', [cid], function(error, results, fields) {
+        if(error)throw error;
+        if (results.length>0){
+            posts1 = []
+            for(var i=0; i<results.length; i++){
+                var d = {}
+                d.account_number = results[i].account_number
+                posts1.push(d)
+            }
+            console.log(posts1)
+        }
+    })
+    res.redirect('/home/fundtransfer/favourite/addfav')
+})
+
+// Open Add fav page
+app.get('/home/fundtransfer/favourite/addfav', function(req, res) {
+    res.render("add_fav.ejs",{art:posts, articles:posts1})
+})
+
+// Add fav payee
+app.post('/home/fundtransfer/favourite/addfav/add', function(req, res){
+    var account_to_account_number = req.body.account_to_account_number
+    var account_from_account_number = req.body.account_from_account_number
+    var transaction_amount = parseInt(req.body.transaction_amount)
+    var res1, res2
+    console.log(account_to_account_number, account_from_account_number, transaction_amount)
+    db.query('SELECT * FROM payee where payee_account_number=?', [account_to_account_number], function(error, results, fields) {
+        res1 = results
+        console.log(res1)
+        if(error)throw error;
+        else{
+            db.query('SELECT * FROM consumer where consumer_id=?', [cid], function(error, results, fields) {
+                res2 = results
+                console.log(res2)
+                if(error)throw error;
+                else{
+                    db.query('INSERT INTO favourites(consumer_consumer_id, payee_name, payee_nick_name, bank_from_ifsc, account_from_account_number, bank_to_ifsc, account_to_account_number, transaction_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [cid, res1[0].payee_name, res1[0].payee_nick_name, res2[0].bank_bank_ifsc, account_from_account_number, res1[0].bank_bank_ifsc, account_to_account_number, transaction_amount], function(error, results, fields) {
+                        if(error)throw error;
+                        else{
+                            console.log("Inserted payee details")
+                            res.redirect("/home/success")
+                        }
+                    })    
+                }
+            })
+        }
+    })
+})
+
+// Delete favourites
+app.get('/home/fundtransfer/favourite/delete', function(req, res) {
+    db.query('DELETE FROM favourites where fav_id=?', [fav_id], function(error, results, fields) {
+        if(error)throw error;
+        else{
+            console.log("Deleted requested fav")
+            res.redirect("/home/success")
+        }
+    })
+})
+
 // Open online pin page - Favourite
-app.post('/home/fundtransfer/favourite/pay/getdata', function(req, res) {
-    const fid = parseInt(req.body.pay)
+app.get('/home/fundtransfer/favourite/pay/getdata', function(req, res) {
+    fid = parseInt(fav_id)
     console.log(fid)
     var d = {}
     posts = []
@@ -562,11 +649,6 @@ app.post('/home/fundtransfer/favourite/send', function(req, res){
 // Open Manage page
 app.get('/home/managepayee', function(req, res) {
     res.render("managepayee.ejs")
-})
-
-// Open Add Payee page
-app.get('/home/managepayee/addpayee', function(req, res) {
-    res.render("addpayee.ejs")
 })
 
 // Open Success page
@@ -711,6 +793,11 @@ app.post('/home/managepayee/deletepayee/verify', function(req, res){
             }
         }
     })
+})
+
+// Open Add Payee page
+app.get('/home/managepayee/addpayee', function(req, res) {
+    res.render("addpayee.ejs")
 })
 
 // Open OTP page

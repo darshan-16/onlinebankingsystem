@@ -25,19 +25,17 @@
                         </div>
                         <div class="flex flex-wrap -mx-3 mt-6">
                             <div class="w-full px-3">
-                                <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-6/12" type="submit" onclick="location.href='http://localhost:3000/home/favourite/addfav'">Add Favourites</button>
+                                <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-6/12" type="submit" onclick="location.href='http://localhost:3000/home/fundtransfer/favourite/addfav/getdata'">Add Favourites</button>
                             </div>
                         </div>
-                        <form action="/home/fundtransfer/recent/getdata" method="post">
+                        <form action="/home/funtransfer/favourite/deladd" method="post">
                             <div class="flex flex-wrap -mx-3 mb-4">
                                 <div class="w-full px-3">
                                     <% for(var i=0; i<articles.length; i++){ %>
                                         <p >
                                             <%= articles[i].fav_id %> - <%= articles[i].payee_nick_name %> - <%= articles[i].account_to_account_number %> - <%= articles[i].transaction_amount %>
-
-                                            <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit" onclick="location.href='http://localhost:3000/home/fundtransfer/favourite/pay/getdata'" value="<%= articles[i].fav_id %>" name="pay">Pay</button>
-                                            <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit" onclick="location.href='http://localhost:3000/home/managepayee/deletepayee/getdata'">Delete</button>
-                                            <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit" onclick="location.href='http://localhost:3000/home/managepayee/updatepayee/getdata'">Update</button>
+                                            <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit" value="<%= articles[i].fav_id %>" name="pay">Pay</button>
+                                            <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit" value="<%= articles[i].fav_id %>" name="delete">Delete</button>
                                         </p>
                                         <br>
                                     <% } %>
