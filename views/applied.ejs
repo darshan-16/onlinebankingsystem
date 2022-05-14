@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="main.scss">
+</head>
+
+<body>
+    <div class="flex flex-col min-h-screen overflow-hidden">
+
+        <%- include('partials/header'); %>
+        <main class="flex-grow">
+
+            <section class="bg-gradient-to-b from-gray-100 to-white">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div class="pt-32 pb-12 md:pt-40 md:pb-20">
+
+                        <div class="max-w-3xl mx-auto text-center pb-12 md:pb-20">
+                            <h1 class="h1" style="font-size:60px;">Applied for a new card.<br>Happy Banking.</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+    <script>
+        window.setTimeout(function () {
+                window.location.href = 'http://localhost:3000/home/getdata';
+            }, 2000);
+    </script>
+</body>
+
+</html>

@@ -116,6 +116,146 @@ app.get('/invalid', (req, res) => {
     res.render('invalid_req.ejs')
 })
 
+// Card controls
+app.get('/home/card', (req, res) => {
+    res.render('card_control.ejs')
+})
+
+// Add card page
+app.get('/home/card/add', (req,res) => {
+    res.render('add_card.ejs')
+})
+
+// Add card details
+app.post('/home/card/add', (req, res) => {
+    var card_number, card_type, card_pin, card_expiry_date, card_cvv, account_account_number, card_limit
+    card_number = req.body.cno
+    card_type = req.body.ctype
+    card_pin = req.body.pin
+    card_expiry_date = String(req.body.expdate)
+    card_cvv = req.body.cvv
+    db.query('SELECT account_number FROM consumer_account WHERE consumer_consumer_id=?', [cid], function(err, results){
+        account_account_number = results[0].account_number
+        if(err) throw err
+        else{
+            db.query('INSERT INTO card(card_number, card_type, card_pin, card_expiry_date, card_cvv, account_account_number, consumer_consumer_id) VALUES (?,?,?,?,?,?,?)', [card_number, card_type, card_pin, card_expiry_date, card_cvv, account_account_number, cid], function(err, results){
+                if(err) throw err
+                else{
+                    console.log("Card added")
+                    res.redirect('/home/success')
+                }
+            })
+        }
+    })
+})
+
+// Reset pin
+app.get('/home/card/resetpin', (req, res) => {
+    res.render('reset_cpin.ejs')
+})
+
+// Reset pin
+app.post('/home/card/resetpin', (req, res) => {
+    var curpin, rpin
+    curpin = req.body.curpin
+    rpin = req.body.rpin
+    db.query('SELECT card_pin FROM card WHERE consumer_consumer_id=?', [cid], function(err, results){
+        if(err) throw err
+        else if(results[0].card_pin == curpin){
+            db.query('UPDATE card SET card_pin=? where consumer_consumer_id=?', [rpin, cid], function(err, results){
+                if(err) throw err
+                else{
+                    console.log("Updated card")
+                    res.redirect('/home/success')
+                }
+            })
+        }
+        else{
+            res.redirect('/home/invalid')
+        }
+    })
+})
+
+// Apply Card
+app.get('/home/card/applycard', (req, res) => {
+    res.render('apply_card.ejs')
+})
+
+app.post('/home/card/applycard', (req, res) => {
+    var curpin
+    curpin = req.body.curpin
+    db.query('SELECT card_pin FROM card WHERE consumer_consumer_id=?', [cid], function(err, results){
+        if(err) throw err
+        else{
+            res.redirect('/home/applied')
+        }
+    })
+})
+
+// Apply success
+app.get('/home/applied', (req, res) => {
+    res.render('applied.ejs')
+})
+
+// Change limit
+app.get('/home/card/setlimit', (req, res) => {
+    res.render('set_limit.ejs')
+})
+
+// Change limit
+app.post('/home/card/setlimit', (req, res) => {
+    var curpin, stlim
+    curpin = req.body.curpin
+    stlim = parseInt(req.body.stlmt)
+    db.query('SELECT card_pin FROM card WHERE consumer_consumer_id=?', [cid], function(err, results){
+        if(err) throw err
+        else if(results[0].card_pin == curpin){
+            db.query('UPDATE card SET card_limit=? where consumer_consumer_id=?', [stlim, cid], function(err, results){
+                if(err) throw err
+                else{
+                    console.log("Updated limit")
+                    res.redirect('/home/success')
+                }
+            })
+        }
+        else{
+            res.redirect('/home/invalid')
+        }
+    })
+})
+
+app.get('/home/invalid', (req, res) => {
+    res.render('invalid.ejs')
+})
+
+app.get('/home/card/virtualcard', (req, res) => {
+    var cno, expdate
+    db.query('SELECT card_number, card_expiry_date FROM card WHERE consumer_consumer_id=?',[cid], function(err, results){
+        if(err) throw err
+        if (results.length>0){
+            cno = results[0].card_number
+            expdate = results[0].card_expiry_date
+            db.query('SELECT consumer_first_name FROM consumer WHERE consumer_id=?',[cid], function(err, results){
+                if(err) throw err
+                else{
+                    var d = {}
+                    posts1 = []
+                    d.cno = cno
+                    d.expdate = expdate
+                    d.name = results[0].consumer_first_name
+                    posts1.push(d)
+                    console.log(posts1)
+                    res.render('virtual_card.ejs', {articles:posts1})
+                }
+            })
+        }
+        else{
+            console.log("Invalid")
+            res.redirect('/home/invalid')
+        }
+    })
+})
+
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy

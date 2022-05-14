@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add card</title>
+</head>
+<body>
+    <form action="/home/card/add" method="post">
+        <label for="cno">Card Number</label>
+        <input type="text" name="cno" id="cno"><br>
+        <label for="ctype">Card type</label>
+        <select name="ctype" id="ctype">
+            <option value="debit">Debit</option>
+            <option value="credit">Credit</option>
+        </select><br>
+        <label for="pin">Card pin</label>
+        <input type="text" name="pin" id="pin"><br>
+        <label for="expdate">Expire date (YYYY-MM)</label> <!-- Validation needed -->
+        <input type="month" name="expdate" id="expdate"><br>
+        <label for="cvv">CVV</label>
+        <input type="text" name="cvv" id="cvv"><br>
+        <input type="submit" value="Add Card">
+    </form>
+</body>
+</html>
