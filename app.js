@@ -46,6 +46,32 @@ app.get('/login', (req, res) => {
     res.render('index.ejs')
 })
 
+// open signup page
+app.get('/signup', (req, res) => {
+    res.render('signup.ejs')
+})
+
+// signup form fill
+app.post('/signup', (req, res) => {
+    var r_consumer_first_name, r_consumer_last_name, r_consumer_phone_number, r_consumer_email, r_consumer_password
+    r_consumer_first_name = req.body.fname
+    r_consumer_last_name = req.body.lname
+    r_consumer_phone_number = req.body.pno
+    r_consumer_email = req.body.email
+    r_consumer_password = req.body.pwd
+    db.query('INSERT INTO req_consumer(r_consumer_first_name, r_consumer_last_name, r_consumer_phone_number, r_consumer_email, r_consumer_password) VALUES (?,?,?,?,?)', [r_consumer_first_name, r_consumer_last_name, r_consumer_phone_number, r_consumer_email, r_consumer_password], function(err, results){
+        if(err) throw err
+        else{
+            console.log("Request sent")
+            res.redirect('/reqsent')
+        }
+    })
+})
+
+// Request sent page
+app.get('/reqsent', (req, res) => {
+    res.render('sent_req.ejs')
+})
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy
