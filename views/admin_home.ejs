@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+</head>
+
+<body>
+    <form action="/admin/accept" method="post">
+        <% for(var i=0; i<articles.length; i++){ %>
+            <p>
+                <%= articles[i].r_no %> - <%= articles[i].r_consumer_first_name %> - <%=
+                            articles[i].r_consumer_phone_number %> - <%= articles[i].r_consumer_email %>
+                                <button class="btn text-white bg-blue-600 hover:bg-blue-700 w-1/6" type="submit"
+                                    value="<%= articles[i].r_no %>" name="accept">Accept</button>
+            </p>
+            <br>
+            <% } %>
+    </form>
+</body>
+
+</html>

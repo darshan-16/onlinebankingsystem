@@ -14,54 +14,78 @@
     <div class="flex flex-col min-h-screen overflow-hidden">
 
         <%- include('partials/header'); %>
-        <main class="flex-grow">
+            <main class="flex-grow">
 
-            <section class="bg-gradient-to-b from-gray-100 to-white">
-                <div class="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div class="pt-32 pb-12 md:pt-40 md:pb-20">
+                <section class="bg-gradient-to-b from-gray-100 to-white">
+                    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                        <div class="pt-32 pb-12 md:pt-40 md:pb-20">
 
-                        <div class="max-w-3xl mx-auto text-center pb-12 md:pb-20">
-                            <h1 class="h1">e-Statement</h1>
+                            <div class="max-w-3xl mx-auto text-center pb-12 md:pb-20">
+                                <h1 class="h1">e-Statement</h1>
+                            </div>
+
+                            <div class="max-w-sm mx-auto">
+                                <form action="/home/estatement/download" method="post">
+                                    <div class="flex flex-wrap -mx-3 mb-4">
+                                        <div class="w-full px-3">
+                                            <label class="block text-gray-800 text-sm font-medium mb-1" for="acc">Select
+                                                Account</label>
+                                            <select name="acc" id="acc">
+                                                <% articles.forEach(function(article){ %>
+                                                    <option value="<%= article.accno %>">
+                                                        <%= article.accno %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <label for="etypem">
+                                        <input type="radio" id="etypem" name="etype" value="month"
+                                            onclick="ShowHideDiv1()" />
+                                        Month
+                                    </label>
+                                    <label for="etypey">
+                                        <input type="radio" id="etypey" name="etype" value="year"
+                                            onclick="ShowHideDiv2()" />
+                                        Year
+                                    </label>
+                                    <label for="etype">
+                                        <input type="radio" id="etype" name="etype" value="all" />
+                                        All
+                                    </label>
+                                    <div id="edurm" style="display: none">
+                                        Month(YYYY-MM)
+                                        <input type="text" id="edurmon" name="edurmon" />
+                                    </div>
+                                    <div id="edury" style="display: none">
+                                        Year(YYYY)
+                                        <input type="text" id="eduryr" name="eduryr" />
+                                    </div>
+                                    <div class="flex flex-wrap -mx-3 mb-4">
+                                        <div class="w-full px-3">
+                                            <label class="block text-gray-800 text-sm font-medium mb-1"
+                                                for="eexcel">Export Excel</label>
+                                            <input id="eexcel" type="submit" name="eexcel" value="Excel"
+                                                class="form-input w-full text-gray-800" />
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap -mx-3 mb-4">
+                                        <div class="w-full px-3">
+                                            <label class="block text-gray-800 text-sm font-medium mb-1"
+                                                for="epdf">Export PDF</label>
+                                            <input id="epdf" type="submit" name="epdf" value="PDF"
+                                                class="form-input w-full text-gray-800" />
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+
                         </div>
-
-                        <div class="max-w-sm mx-auto">
-                            <form action="/home/estatement/download" method="post">
-                                <div class="flex flex-wrap -mx-3 mb-4">
-                                    <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="acc">Select
-                                            Account</label>
-                                        <select name="acc" id="acc">
-                                            <% articles.forEach(function(article){ %>
-                                                <option value="<%= article.accno %>">
-                                                    <%= article.accno %>
-                                                </option>
-                                                <% }) %>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap -mx-3 mb-4">
-                                    <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="eexcel">Export Excel</label>
-                                        <input id="eexcel" type="submit" name="eexcel" value="Excel"
-                                            class="form-input w-full text-gray-800"
-                                            />
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap -mx-3 mb-4">
-                                    <div class="w-full px-3">
-                                        <label class="block text-gray-800 text-sm font-medium mb-1" for="epdf">Export PDF</label>
-                                        <input id="epdf" type="submit" name="epdf" value="PDF" class="form-input w-full text-gray-800" />
-                                    </div>
-                                </div>
-                            </form>
-                            
-                        </div>
-
                     </div>
-                </div>
-            </section>
+                </section>
 
-        </main>
+            </main>
 
     </div>
     <script>
@@ -70,7 +94,16 @@
             document.getElementById("bal").value = parseInt(this.value.substr(10,));
             console.log('You selected: ', this.value);
         });
-
+        function ShowHideDiv1() {
+            var etypem = document.getElementById("etypem");
+            var edurm = document.getElementById("edurm");
+            edurm.style.display = etypem.checked ? "block" : "none";
+        }
+        function ShowHideDiv2() {
+            var etypey = document.getElementById("etypey");
+            var edury = document.getElementById("edury");
+            edury.style.display = etypey.checked ? "block" : "none";
+        }
     </script>
 </body>
 
