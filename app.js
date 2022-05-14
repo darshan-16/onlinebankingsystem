@@ -72,6 +72,50 @@ app.post('/signup', (req, res) => {
 app.get('/reqsent', (req, res) => {
     res.render('sent_req.ejs')
 })
+
+// Activate account
+app.get('/activate', (req, res) => {
+    res.render('activate_acc.ejs')
+})
+
+// Account activation - pin setting
+app.post('/activate', (req, res) => {
+    var uname, pwd, npin
+    uname = req.body.uname
+    pwd = req.body.pwd
+    npin = req.body.npin
+    if(uname && pwd){
+        db.query('SELECT consumer_id, activation FROM consumer where consumer_id = ? and consumer_password = ?', [uname, pwd], function(err, results, fields) {
+            if(err) throw err
+            else if((results.length > 0) && (results[0].activation == 0)){
+                cid = results[0].consumer_id
+                db.query('UPDATE consumer SET consumer_online_pin=?, activation=? where consumer_id=?', [npin, 1, cid], function(err, results){
+                    if(err) throw err
+                    else{
+                        res.redirect('/activated')
+                    }
+                })
+            }
+            else{
+                res.redirect('/invalid')
+            }
+        })
+    }
+    else{
+        res.redirect('/invalid')
+    }
+})
+
+// Activation msg
+app.get('/activated', (re, res) => {
+    res.render('activated.ejs')
+})
+
+// Invalid requests
+app.get('/invalid', (req, res) => {
+    res.render('invalid_req.ejs')
+})
+
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy
