@@ -297,22 +297,22 @@ app.post('/admin/accept', (req, res) => {
             consumer_password = results[0].r_consumer_password
             db.query('SELECT * FROM consumer', function (err, results) {
                 if (err) throw err
-                else{
-                    console.log(results[results.length-1].consumer_id)
-                    c_id = String(parseInt(results[results.length-1].consumer_id)+1)
+                else {
+                    console.log(results[results.length - 1].consumer_id)
+                    c_id = String(parseInt(results[results.length - 1].consumer_id) + 1)
                     var acc_no = String(Math.floor(1000000000 + Math.random() * 9000000000));
                     console.log(c_id, acc_no)
                     db.query('INSERT INTO consumer(consumer_id, consumer_first_name, consumer_last_name, consumer_phone_number, consumer_email, consumer_password, consumer_online_pin, bank_bank_ifsc, credit_points, activation) VALUES (?,?,?,?,?,?,?,?,?,?)', [c_id, consumer_first_name, consumer_last_name, consumer_phone_number, consumer_email, consumer_password, '0000', 'UNOL0000001', 100, 0], function (err, results) {
                         if (err) throw err
-                        else{
+                        else {
                             console.log("Inserted new consumer")
                             db.query('INSERT INTO consumer_account(account_number, account_account_type, consumer_consumer_id, account_balance) VALUES (?,?,?,?)', [acc_no, 'Savings', c_id, 5000], function (err, results) {
                                 if (err) throw err
-                                else{
+                                else {
                                     console.log("Inserted new consumer account")
                                     db.query('DELETE FROM req_consumer WHERE r_no=?', [r_id], function (err, results) {
                                         if (err) throw err
-                                        else{
+                                        else {
                                             console.log("Deleted request")
                                             res.redirect('/admin')
                                         }
@@ -321,13 +321,133 @@ app.post('/admin/accept', (req, res) => {
                             })
                         }
                     })
-                    
+
                 }
             })
         }
 
     })
-    
+
+})
+
+// Report Generation
+app.get('/admin/reports', (req, res) => {
+    res.render('reports.ejs')
+})
+
+app.post('/admin/reports/download', (req, res) => {
+    console.log(req.body.report)
+    if (req.body.report == "trep") {
+        let workbook = new excel.Workbook(); //creating workbook
+        let worksheet = workbook.addWorksheet('Transactions');
+
+        worksheet.columns = [
+            { header: 'Transaction ID', key: 'transaction_id', width: 30 },
+            { header: 'Transaction Time', key: 'transaction_time', width: 30 },
+            { header: 'IFSC', key: 'bank_from_ifsc', width: 30 },
+            { header: 'Account Number', key: 'account_from_account_number', width: 30 },
+            { header: 'Other Account IFSC', key: 'bank_to_ifsc', width: 30 },
+            { header: 'Other Account Number', key: 'account_to_account_number', width: 30 },
+            { header: 'Transaction Method', key: 'transaction_transaction_method', width: 30 },
+            { header: 'Transaction Amount', key: 'transaction_amount', width: 30 },
+            { header: 'Transaction Status', key: 'transaction_status', width: 30 },
+            { header: 'Transaction Charge', key: 'transaction_charge', width: 30 }
+        ];
+        db.query('SELECT * FROM consumer_transaction', function (error, results, fields) {
+            if (error) throw error;
+            else {
+                console.log(results)
+                const jsonTransac = JSON.parse(JSON.stringify(results));
+                console.log(jsonTransac);
+                worksheet.addRows(jsonTransac);
+                workbook.xlsx.writeFile("tr_statement.xlsx")
+                    .then(function () {
+                        console.log("File saved!");
+                    });
+            }
+        })
+    }
+    else if(req.body.report == "crep"){
+        let workbook = new excel.Workbook(); //creating workbook
+        let worksheet = workbook.addWorksheet('Consumer');
+
+        worksheet.columns = [
+            { header: 'Consumer ID', key: 'consumer_id', width: 30 },
+            { header: 'Consumer First Name', key: 'consumer_first_name', width: 30 },
+            { header: 'Consumer Last Name', key: 'consumer_last_name', width: 30 },
+            { header: 'Consumer Phone No.', key: 'consumer_phone_number', width: 30 },
+            { header: 'Consumer Email', key: 'consumer_email', width: 30 },
+            { header: 'Face Recognition', key: 'is_face_recognized', width: 30 },
+            { header: 'IIFC', key: 'bank_bank_ifsc', width: 30 },
+            { header: 'Credit Points', key: 'credit_points', width: 30 },
+            { header: 'Account Activation', key: 'activation', width: 30 }
+        ];
+        db.query('SELECT consumer_id,consumer_first_name,consumer_last_name,consumer_phone_number,consumer_email,is_face_recognized,bank_bank_ifsc,credit_points,activation FROM consumer', function (error, results, fields) {
+            if (error) throw error;
+            else {
+                const jsonTransac = JSON.parse(JSON.stringify(results));
+                console.log(jsonTransac);
+                worksheet.addRows(jsonTransac);
+                workbook.xlsx.writeFile("c_statement.xlsx")
+                    .then(function () {
+                        console.log("File saved!");
+                    });
+            }
+        })
+    }
+    else if (req.body.report == "prep") {
+        let workbook = new excel.Workbook(); //creating workbook
+        let worksheet = workbook.addWorksheet('Payee');
+
+        worksheet.columns = [
+            { header: 'Consumer ID', key: 'consumer_consumer_id', width: 30 },
+            { header: 'Name', key: 'payee_name', width: 30 },
+            { header: 'Nick Name', key: 'payee_nick_name', width: 30 },
+            { header: 'Account Number', key: 'payee_account_number', width: 30 },
+            { header: 'IFSC', key: 'bank_bank_ifsc', width: 30 }
+        ];
+        db.query('SELECT * FROM payee', function (error, results, fields) {
+            if (error) throw error;
+            else {
+                const jsonTransac = JSON.parse(JSON.stringify(results));
+                console.log(jsonTransac);
+                worksheet.addRows(jsonTransac);
+                workbook.xlsx.writeFile("py_statement.xlsx")
+                    .then(function () {
+                        console.log("File saved!");
+                    });
+            }
+        })
+    }
+    else if (req.body.report == "arep") {
+        let workbook = new excel.Workbook(); //creating workbook
+        let worksheet = workbook.addWorksheet('Payee');
+
+        worksheet.columns = [
+            { header: 'Consumer ID', key: 'consumer_consumer_id', width: 30 },
+            { header: 'Account Number', key: 'account_number', width: 30 },
+            { header: 'Account Type', key: 'account_account_type', width: 30 },
+            { header: 'Account Balance', key: 'account_balance', width: 30 }
+        ];
+        db.query('SELECT * FROM consumer_account', function (error, results, fields) {
+            if (error) throw error;
+            else {
+                const jsonTransac = JSON.parse(JSON.stringify(results));
+                console.log(jsonTransac);
+                worksheet.addRows(jsonTransac);
+                workbook.xlsx.writeFile("ca_statement.xlsx")
+                    .then(function () {
+                        console.log("File saved!");
+                    });
+            }
+        })
+    }
+    res.redirect('/admin/reports/download/success')
+})
+
+// Admin report Success
+app.get('/admin/reports/download/success', (req, res) => {
+    res.render('ad_success.ejs')
 })
 
 // Help
