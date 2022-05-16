@@ -1,1 +1,11 @@
 .DS_Store
+node_modules
+c_statement.xlsx
+ca_statement.xlsx
+py_statement.xlsx
+tr_statement.xlsx
+sonar-project.properties
+.scannerwork
+.gitignore
+.env
+e-statement.xlsx

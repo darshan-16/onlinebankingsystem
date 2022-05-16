@@ -18,10 +18,17 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: false }))
 
+// const db = mysql.createConnection({
+//     user: "root",
+//     host: "localhost",
+//     password: "password",
+//     database: "uno_bank_v2",
+// });
+
 const db = mysql.createConnection({
     user: "root",
-    host: "localhost",
-    password: "password",
+    host: "35.192.125.26",
+    password: "123123",
     database: "uno_bank_v2",
 });
 
@@ -259,7 +266,6 @@ app.get('/home/card/virtualcard', (req, res) => {
 
 // Logout
 app.get('/logout', (req, res) => {
-    req.session.destroy
     res.redirect('/login')
 })
 
